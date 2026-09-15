@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html class="h-full w-full overflow-hidden bg-[#03091e] select-none" lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"/>
+  
+  <title>REHAAN_ENGINE — Spatial Universe</title>
+  <meta name="description" content="MD Rehaan Alam — Android Developer, Software Engineer, and AI/ML Architect. Futuristic 3D spatial computing portfolio showcasing flagship mobile applications and engineering systems."/>
+  <meta name="keywords" content="Rehaan Alam, Android Developer, Jetpack Compose, Kotlin, Firebase, Supabase, AI/ML, Spatial Portfolio"/>
+  <meta name="author" content="Md Rehaan Alam"/>
+  <meta name="theme-color" content="#030a21"/>
+
+  <!-- Open Graph / Social Metadata -->
+  <meta property="og:type" content="website"/>
+  <meta property="og:title" content="REHAAN_ENGINE — Spatial Universe"/>
+  <meta property="og:description" content="Production 3D Spatial Computing Portfolio of Md Rehaan Alam — Android & AI/ML Engineer."/>
+  <meta property="og:image" content="./assets/hero_profile.jpg"/>
+  <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="twitter:title" content="REHAAN_ENGINE — Spatial Universe"/>
+  <meta name="twitter:description" content="Production 3D Spatial Computing Portfolio of Md Rehaan Alam — Android & AI/ML Engineer."/>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg"/>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+            display: ['"Space Grotesk"', 'sans-serif'],
+          },
+          colors: {
+            space: {
+              950: '#03081a',
+              900: '#061332',
+              800: '#0b1f4d',
+              700: '#112c6a',
+            },
+            cyanGlow: '#00f2fe',
+            tealGlow: '#2dd4bf',
+            indigoGlow: '#818cf8',
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Production Spatial Styles -->
+  <link rel="stylesheet" href="./css/spatial.css"/>
+</head>
+
+<body class="h-full w-full overflow-hidden bg-[#030a21]">
+  <!-- Accessibility Skip Link -->
+  <a href="#node-0" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 z-50 bg-cyan-500 text-black px-4 py-2 rounded-md font-mono text-sm">Skip to Main Experience</a>
+
+  <!-- Spatial Parallax Starfield Canvas (Multi-depth & Stream trails) -->
+  <canvas id="starfield-canvas"></canvas>
+
+  <!-- Atmospheric Nebular Fog Canvas with vibrant cyan-indigo clouds -->
+  <canvas id="atmosphere-canvas"></canvas>
+
+  <!-- Top Audio HUD Toggle & Ambient Status -->
+  <header class="fixed hud-top-right z-50 flex items-center gap-2">
+    <button id="audio-toggle-btn" class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-900/90 border border-cyan-400/40 hover:border-cyan-300 transition-all text-xs font-mono font-bold text-cyan-300 shadow-[0_0_12px_rgba(56,189,248,0.2)] focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400" title="Toggle Spatial Audio Synth" aria-label="Toggle Spatial Audio Synth" aria-pressed="true">
+      <span id="audio-indicator-dot" class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+      <span id="audio-btn-label">AUDIO: ON</span>
+      <svg id="audio-icon" class="w-3.5 h-3.5 ml-0.5 text-cyan-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path>
+      </svg>
+    </button>
+  </header>
+
+  <!-- Contextual Destination Indicator (High Contrast & Razor Sharp) -->
+  <aside id="destination-indicator" class="fixed hud-top-left z-50 pointer-events-none transition-all duration-500 flex items-center gap-3 px-3.5 py-1.5 rounded-full bg-slate-900/90 border border-cyan-400/60 shadow-lg shadow-cyan-500/20 opacity-0 -translate-y-2" aria-live="polite">
+    <div class="w-2 h-2 rounded-full bg-cyan-300 animate-ping"></div>
+    <span class="font-mono text-[11px] tracking-[0.25em] uppercase text-cyan-300 font-bold">REHAAN_ENGINE // <span id="destination-title" class="text-white drop-shadow">ENTRY ORBIT</span></span>
+  </aside>
+
+  <!-- Depth Travel Indicator -->
+  <aside class="fixed hud-depth top-1/2 -translate-y-1/2 z-40 pointer-events-none hidden md:flex flex-col items-center gap-2.5 opacity-75 hover:opacity-100 transition-opacity" aria-label="Current Spatial Depth">
+    <span class="font-mono text-[10px] text-cyan-200 uppercase tracking-[0.2em] font-bold">DEPTH</span>
+    <div class="w-[2px] h-28 bg-white/25 relative overflow-hidden rounded-full shadow-[0_0_6px_#38bdf8]">
+      <div id="depth-bar" class="w-full bg-gradient-to-b from-cyan-300 to-teal-400 shadow-[0_0_8px_#38bdf8] absolute top-0 left-0 transition-all duration-300" style="height: 0.00%;"></div>
+    </div>
+    <span id="depth-val" class="font-mono text-[10px] text-cyan-300 font-bold tracking-wider">00000m</span>
+  </aside>
+
+  <!-- Quick Teleport Coordinates Navigation -->
+  <nav id="teleport-nav" class="fixed hud-bottom-right z-50 flex items-center gap-2 bg-slate-900/90 px-3.5 py-1.5 rounded-full border border-cyan-400/40 shadow-lg shadow-black/60" aria-label="Teleport Coordinates">
+    <button data-node-index="0" class="w-2.5 h-2.5 rounded-full bg-cyan-400 hover:scale-150 transition-all shadow-[0_0_6px_#38bdf8] focus-visible:ring-2 focus-visible:ring-cyan-400" title="Hero Entry" aria-label="Navigate to Hero Entry"></button>
+    <button data-node-index="1" class="w-2.5 h-2.5 rounded-full bg-white/70 hover:scale-150 transition-all hover:bg-white focus-visible:ring-2 focus-visible:ring-cyan-400" title="Portal Entry" aria-label="Navigate to Portal Entry"></button>
+    <button data-node-index="2" class="w-2.5 h-2.5 rounded-full bg-white/70 hover:scale-150 transition-all hover:bg-white focus-visible:ring-2 focus-visible:ring-cyan-400" title="About" aria-label="Navigate to About"></button>
+    <button data-node-index="3" class="w-2.5 h-2.5 rounded-full bg-white/70 hover:scale-150 transition-all hover:bg-white focus-visible:ring-2 focus-visible:ring-cyan-400" title="Tech Stack" aria-label="Navigate to Tech Stack"></button>
+    <button data-node-index="4" class="w-2.5 h-2.5 rounded-full bg-white/70 hover:scale-150 transition-all hover:bg-white focus-visible:ring-2 focus-visible:ring-cyan-400" title="MyWallpaper" aria-label="Navigate to MyWallpaper"></button>
+    <button data-node-index="5" class="w-2.5 h-2.5 rounded-full bg-white/70 hover:scale-150 transition-all hover:bg-white focus-visible:ring-2 focus-visible:ring-cyan-400" title="MyWallpaper Admin" aria-label="Navigate to MyWallpaper Admin"></button>
+    <button data-node-index="6" class="w-2.5 h-2.5 rounded-full bg-white/70 hover:scale-150 transition-all hover:bg-white focus-visible:ring-2 focus-visible:ring-cyan-400" title="Urban Bites" aria-label="Navigate to Urban Bites"></button>
+    <button data-node-index="7" class="w-2.5 h-2.5 rounded-full bg-white/70 hover:scale-150 transition-all hover:bg-white focus-visible:ring-2 focus-visible:ring-cyan-400" title="Urban Bites Admin" aria-label="Navigate to Urban Bites Admin"></button>
+    <button data-node-index="8" class="w-2.5 h-2.5 rounded-full bg-white/70 hover:scale-150 transition-all hover:bg-white focus-visible:ring-2 focus-visible:ring-cyan-400" title="Falah Pro" aria-label="Navigate to Falah Pro"></button>
+    <button data-node-index="9" class="w-2.5 h-2.5 rounded-full bg-white/70 hover:scale-150 transition-all hover:bg-white focus-visible:ring-2 focus-visible:ring-cyan-400" title="FaceSense & DRC" aria-label="Navigate to FaceSense & DRC"></button>
+    <button data-node-index="10" class="w-2.5 h-2.5 rounded-full bg-white/70 hover:scale-150 transition-all hover:bg-white focus-visible:ring-2 focus-visible:ring-cyan-400" title="Experience" aria-label="Navigate to Experience"></button>
+    <button data-node-index="11" class="w-2.5 h-2.5 rounded-full bg-cyan-300 hover:scale-150 transition-all shadow-[0_0_6px_#38bdf8] focus-visible:ring-2 focus-visible:ring-cyan-400" title="The Core" aria-label="Navigate to The Core"></button>
+  </nav>
+
+  <!-- ============================================================ -->
+  <!-- 3D SPATIAL WORLD STAGE -->
+  <!-- ============================================================ -->
+  <main id="world-stage">
+
+    <!-- NODE 0: HERO ENTRY WORLD (Z = 0) -->
+    <section id="node-0" class="spatial-node spatial-interactive" aria-label="Hero Entry">
+      <div class="flex flex-col items-center text-center max-w-4xl px-4 py-2">
+        <!-- Radiant Identity Badge -->
+        <div class="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-slate-900/90 border border-cyan-400/60 mb-3 shadow-[0_0_15px_rgba(56,189,248,0.25)]">
+          <span class="w-2 h-2 rounded-full bg-teal-400 animate-pulse shadow-[0_0_8px_#2dd4bf]"></span>
+          <span class="font-mono text-xs tracking-[0.25em] text-cyan-200 font-bold">REHAAN_ENGINE v2.4</span>
+          <span class="text-white/40 text-xs">•</span>
+          <span class="font-mono text-[11px] tracking-wider text-slate-100 uppercase font-semibold">SPATIAL RUNTIME</span>
+        </div>
+
+        <!-- Name & Designation with Vibrant Glow -->
+        <h2 class="font-mono text-xs tracking-[0.35em] text-cyan-300 uppercase mb-1.5 font-bold text-bloom-cyan">
+          MD REHAAN ALAM — ANDROID DEVELOPER
+        </h2>
+        <div class="font-mono text-[11px] tracking-widest text-slate-100 uppercase mb-4 font-semibold">
+          SOFTWARE DEVELOPER • AI/ML ARCHITECT
+        </div>
+
+        <!-- Master Headline: Ultra-crisp typography -->
+        <h1 class="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black tracking-tight text-white leading-[1.05] mb-4 text-bloom-white">
+          I BUILD DIGITAL<br/>
+          <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-teal-200 to-sky-300 drop-shadow-[0_0_20px_rgba(56,189,248,0.6)]">PRODUCTS</span> THAT WORK.
+        </h1>
+
+        <!-- Supporting narrative copy -->
+        <p class="text-xs md:text-sm text-slate-100 font-medium max-w-xl leading-relaxed mb-4">
+          Building modern Android applications, connected web systems, AI-powered experiences, and high-performance practical software products.
+        </p>
+
+        <!-- Bright Sharp Tech Line Tags -->
+        <div class="flex flex-wrap items-center justify-center gap-2 max-w-xl mb-3.5">
+          <span class="font-mono text-xs px-3 py-1 rounded-lg bg-slate-900/90 border border-cyan-400/40 text-white font-bold shadow-sm">KOTLIN</span>
+          <span class="font-mono text-xs px-3 py-1 rounded-lg bg-cyan-950/80 border border-cyan-400/60 text-cyan-200 font-bold shadow-[0_0_10px_rgba(56,189,248,0.25)]">JETPACK COMPOSE</span>
+          <span class="font-mono text-xs px-3 py-1 rounded-lg bg-slate-900/90 border border-cyan-400/40 text-white font-bold shadow-sm">FIREBASE</span>
+          <span class="font-mono text-xs px-3 py-1 rounded-lg bg-slate-900/90 border border-cyan-400/40 text-white font-bold shadow-sm">SUPABASE</span>
+          <span class="font-mono text-xs px-3 py-1 rounded-lg bg-teal-950/80 border border-teal-400/60 text-teal-200 font-bold shadow-[0_0_10px_rgba(45,212,191,0.25)]">AI / ML</span>
+        </div>
+
+        <!-- Travel indicator prompt (Interactive CTA) -->
+        <button id="cta-enter-portal" class="mt-2 flex flex-col items-center gap-1 text-cyan-300 font-mono text-xs tracking-widest font-bold text-bloom-cyan hover:scale-105 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 px-3 py-1 rounded-lg" aria-label="Scroll or Click to Enter Portal">
+          <span>SCROLL TO ENTER PORTAL</span>
+          <span class="text-sm animate-bounce">↓</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- NODE 1: THE HERO DEVICE PORTAL (Z = 2800) -->
+    <section id="node-1" class="spatial-node" aria-label="The Hero Device Portal">
+      <div class="relative flex flex-col items-center">
+        <!-- Radiant Cyan/Blue Aura Backdrop -->
+        <div class="absolute -inset-16 bg-gradient-to-b from-cyan-400/25 via-indigo-500/15 to-transparent blur-2xl rounded-full pointer-events-none"></div>
+
+        <!-- Phone Chassis -->
+        <div class="phone-body">
+          <div class="phone-island">
+            <span class="w-2.5 h-2.5 rounded-full bg-slate-800 border border-cyan-400/70"></span>
+            <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping shadow-[0_0_6px_#38bdf8]"></span>
+          </div>
+          <div class="phone-screen flex flex-col justify-between relative bg-slate-950">
+            <div class="w-full h-full relative overflow-hidden rounded-[30px]">
+              <img 
+                alt="MD Rehaan Alam" 
+                class="w-full h-full object-cover object-top block" 
+                src="./assets/hero_profile.jpg"
+                onerror="this.onerror=null; this.src='https://lh3.googleusercontent.com/aida-public/AB6AXuD3CnHrOAHtG95GMqqVsONElWSb8opo0QHSdIJYhfc4z49ACTCceTSv7HmmgErVcSbvCIcY3KryjM3YwzW9GxloI2JplMEXBk4EyjJIRvPbUnubnQ0ziTOGd8ZbL002ROfzzxggwPectBbl2dzg5sWaOWpgER-gt7RcVzd1IY9Ea-kJNlBUFDyVmjzImhv5yiRxZeB8_NnkDeqaKOyA3_KjynDQ6CHTYf1ovrujiR6aGdLPSfgO3huepvZbuPKKDElISQ';"
+                loading="eager"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-5 font-mono text-xs text-cyan-300 tracking-[0.3em] uppercase text-center font-bold text-bloom-cyan">
+          [ PRIMARY PORTAL ENTRY ]
+        </div>
+      </div>
+    </section>
+
+    <!-- NODE 2: ABOUT WORLD (Z = 5600) -->
+    <section id="node-2" class="spatial-node spatial-interactive" aria-label="Identity Specification">
+      <div class="w-[88vw] max-w-4xl space-glass p-6 md:p-8 rounded-3xl relative overflow-hidden">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-cyan-400/25 pb-5 mb-5">
+          <div>
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-400/20 border border-cyan-400/50 text-cyan-200 font-mono text-xs mb-2 font-bold">
+              <span class="w-2 h-2 rounded-full bg-cyan-300 shadow-[0_0_6px_#38bdf8]"></span>
+              IDENTITY SPECIFICATION
+            </div>
+            <h2 class="font-display text-2xl md:text-4xl font-black tracking-tight text-white text-bloom-white">MD REHAAN ALAM</h2>
+            <p class="font-mono text-xs md:text-sm text-cyan-300 tracking-wider mt-1 uppercase font-bold text-bloom-cyan">ANDROID DEVELOPER • ENGINEER</p>
+          </div>
+          <div class="space-glass-card px-5 py-3 rounded-2xl border border-cyan-400/40 text-right">
+            <span class="font-mono text-[10px] text-slate-200 uppercase tracking-widest block font-semibold">ACADEMIC STATUS</span>
+            <span class="font-mono text-sm text-white font-bold block mt-0.5">GALGOTIAS UNIVERSITY</span>
+            <span class="font-mono text-xs text-teal-300 block font-bold">2024 – 2028 (ONGOING)</span>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div class="space-glass-card p-5 rounded-2xl border border-cyan-400/30 space-y-3">
+            <h3 class="font-mono text-xs uppercase tracking-widest text-cyan-200 flex items-center gap-2 font-bold">
+              <svg class="w-4 h-4 text-cyan-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"></path>
+              </svg>
+              DEGREE PROGRAM
+            </h3>
+            <p class="text-white text-base md:text-lg font-bold leading-snug">
+              B.Tech in Electronics and Communication Engineering
+            </p>
+            <div class="pt-2 border-t border-white/10 flex items-center justify-between">
+              <span class="font-mono text-xs text-slate-200 font-semibold">INSTITUTION</span>
+              <span class="font-mono text-xs text-cyan-200 font-bold">Galgotias University</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="font-mono text-xs text-slate-200 font-semibold">TIMELINE</span>
+              <span class="font-mono text-xs text-white font-bold">2024 – 2028</span>
+            </div>
+          </div>
+
+          <div class="space-glass-card p-5 rounded-2xl border border-teal-400/40 bg-teal-950/30 space-y-3 flex flex-col justify-between">
+            <div>
+              <h3 class="font-mono text-xs uppercase tracking-widest text-teal-300 flex items-center gap-2 font-bold">
+                <svg class="w-4 h-4 text-teal-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                ACADEMIC PERFORMANCE
+              </h3>
+              <div class="mt-2 flex items-baseline gap-3">
+                <span class="font-mono text-4xl md:text-5xl font-black text-white tracking-tight text-bloom-white">7.52</span>
+                <span class="font-mono text-base text-slate-200 font-bold">/ 10</span>
+              </div>
+              <div class="mt-1 font-mono text-xs tracking-wider text-teal-300 font-bold">
+                CURRENT CGPA
+              </div>
+            </div>
+            <p class="font-mono text-xs text-slate-100 leading-relaxed pt-2 border-t border-white/10 font-medium">
+              Consistent focus on low-level system design, mobile application engineering, and applied artificial intelligence.
+            </p>
+          </div>
+        </div>
+
+        <div class="mt-5 flex items-center justify-between text-slate-200 font-mono text-xs font-bold">
+          <span>DESTINATION 01 OF 08</span>
+          <button id="cta-travel-forward" class="text-cyan-300 animate-pulse text-bloom-cyan hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 px-2 py-0.5 rounded">
+            CONTINUE TRAVELING FORWARD →
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- NODE 3: TECHNOLOGY WORLD (Z = 8400) -->
+    <section id="node-3" class="spatial-node spatial-interactive" aria-label="Engineering Matrix">
+      <div class="w-[88vw] max-w-4xl space-glass p-6 md:p-8 rounded-3xl relative">
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-6 pb-4 border-b border-cyan-400/25">
+          <div>
+            <span class="font-mono text-xs text-cyan-300 uppercase tracking-[0.25em] font-bold">ARCHITECTURAL STACK</span>
+            <h2 class="font-display text-2xl md:text-4xl font-black text-white mt-1 text-bloom-white">ENGINEERING MATRIX</h2>
+          </div>
+          <span class="font-mono text-xs text-cyan-200 mt-2 md:mt-0 font-semibold">PRODUCTION READY // RUNTIME DISTRIBUTION</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <!-- Category 1: Core Mobile -->
+          <div class="space-glass-card p-5 rounded-2xl border-t-2 border-t-cyan-400 border border-white/20">
+            <h3 class="font-mono text-xs font-bold text-cyan-300 mb-3 flex items-center gap-2 uppercase tracking-wider">
+              <span class="w-2 h-2 rounded-sm bg-cyan-400 shadow-[0_0_6px_#38bdf8]"></span> ANDROID CORE
+            </h3>
+            <div class="flex flex-wrap gap-1.5">
+              <span class="font-mono text-xs px-2.5 py-1 rounded-md bg-white/15 text-white font-bold border border-white/25">Kotlin</span>
+              <span class="font-mono text-xs px-2.5 py-1 rounded-md bg-cyan-400/25 text-cyan-200 font-bold border border-cyan-400/50">Jetpack Compose</span>
+              <span class="font-mono text-xs px-2.5 py-1 rounded-md bg-white/15 text-white font-bold border border-white/25">MVVM</span>
+              <span class="font-mono text-xs px-2.5 py-1 rounded-md bg-white/15 text-white font-bold border border-white/25">Clean Arch</span>
+              <span class="font-mono text-xs px-2.5 py-1 rounded-md bg-white/15 text-white font-bold border border-white/25">WorkManager</span>
+              <span class="font-mono text-xs px-2.5 py-1 rounded-md bg-white/15 text-white font-bold border border-white/25">Coroutines</span>
+              <span class="font-mono text-xs px-2.5 py-1 rounded-md bg-white/15 text-white font-bold border border-white/25">StateFlow</span>
+              <span class="font-mono text-xs px-2.5 py-1 rounded-md bg-white/15 text-white font-bold border border-white/25">DataStore</span>
+            </div>
+          </div>
+
+          <!-- Category 2: Backend & Cloud -->
+          <div class="space-glass-card p-5 rounded-2xl border-t-2 border-t-teal-400 border border-white/20">
+            <h3 class="font-mono text-xs font-bold text-teal-300 mb-3 flex items-center gap-2 uppercase tracking-wider">
+              <span class="w-2 h-2 rounded-sm bg-teal-400 shadow-[0_0_6px_#2dd4bf]"></span> BACKEND &amp; DATA
+            </h3>
+            <div class="flex flex-wrap gap-1.5">
+              <span class="font-mono text-xs px-2.5 py-1 rounded-md bg-teal-400/25 text-teal-200 font-bold border border-teal-400/50">Firebase</span>
+              <span class="font-mono text-xs px-2.5 py-1 rounded-md bg-teal-400/25 text-teal-200 font-bold border border-teal-400/50">Supabase</span>
+              <span class="font-mono text-xs px-2.5 py-1 rounded-md bg-white/15 text-white font-bold border border-white/25">REST APIs</span>
+              <span class="font-mono text-xs px-2.5 py-1 rounded-md bg-white/15 text-white font-bold border border-white/25">PostgreSQL</span>
+              <span class="font-mono text-xs px-2.5 py-1 rounded-md bg-white/15 text-white font-bold border border-white/25">Firestore</span>
+              <span class="font-mono text-xs px-2.5 py-1 rounded-md bg-white/15 text-white font-bold border border-white/25">MySQL</span>
+              <span class="font-mono text-xs px-2.5 py-1 rounded-md bg-white/15 text-white font-bold border border-white/25">SQL</span>
+            </div>
+          </div>
+
+          <!-- Category 3: AI & Languages -->
+          <div class="space-glass-card p-5 rounded-2xl border-t-2 border-t-indigo-400 border border-white/20">
+            <h3 class="font-mono text-xs font-bold text-indigo-300 mb-3 flex items-center gap-2 uppercase tracking-wider">
+              <span class="w-2 h-2 rounded-sm bg-indigo-400 shadow-[0_0_6px_#818cf8]"></span> AI/ML &amp; SYSTEMS
+            </h3>
+            <div class="flex flex-wrap gap-1.5">
+              <span class="font-mono text-xs px-2.5 py-1 rounded-md bg-indigo-400/25 text-indigo-200 font-bold border border-indigo-400/50">AI / ML</span>
+              <span class="font-mono text-xs px-2.5 py-1 rounded-md bg-indigo-400/25 text-indigo-200 font-bold border border-indigo-400/50">Google ML Kit</span>
+              <span class="font-mono text-xs px-2.5 py-1 rounded-md bg-white/15 text-white font-bold border border-white/25">Python</span>
+              <span class="font-mono text-xs px-2.5 py-1 rounded-md bg-white/15 text-white font-bold border border-white/25">Java</span>
+              <span class="font-mono text-xs px-2.5 py-1 rounded-md bg-white/15 text-white font-bold border border-white/25">Material 3</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- NODE 4: FEATURED PROJECT 01 — MYWALLPAPER (Z = 11200) -->
+    <section id="node-4" class="spatial-node spatial-interactive" aria-label="MyWallpaper Project">
+      <div class="w-[88vw] max-w-4xl space-glass p-6 md:p-8 rounded-3xl relative">
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+          <div class="md:col-span-7 space-y-4">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-400/20 border border-cyan-400/60 text-cyan-200 font-mono text-xs font-bold">
+              <span>FLAGSHIP 01</span>
+              <span>•</span>
+              <span>ANDROID ECOSYSTEM</span>
+            </div>
+
+            <h2 class="font-display text-3xl md:text-5xl font-black text-white tracking-tight leading-none text-bloom-white">
+              MYWALLPAPER
+            </h2>
+
+            <div class="font-mono text-xs md:text-sm text-cyan-300 tracking-wider uppercase font-bold text-bloom-cyan">
+              ANDROID APPLICATION + WEB ADMIN PANEL
+            </div>
+
+            <p class="text-slate-100 text-xs md:text-sm leading-relaxed font-medium">
+              High-performance Android wallpaper discovery application featuring categorized browsing, bookmarking, downloads, and Cloudinary media optimization powered by Firebase.
+            </p>
+
+            <div class="grid grid-cols-2 gap-2.5 pt-1">
+              <div class="space-glass-card p-3 rounded-xl border border-cyan-400/30">
+                <span class="font-mono text-[10px] text-cyan-300 font-bold block mb-0.5">FEATURES</span>
+                <p class="text-xs text-white font-semibold">Auth, Discovery, Favorites, Fast Downloads</p>
+              </div>
+              <div class="space-glass-card p-3 rounded-xl border border-teal-400/30">
+                <span class="font-mono text-[10px] text-teal-300 font-bold block mb-0.5">STORAGE</span>
+                <p class="text-xs text-white font-semibold">Cloudinary Media CDN &amp; Realtime Cache</p>
+              </div>
+            </div>
+
+            <div class="flex flex-wrap gap-1.5 pt-1">
+              <span class="font-mono text-xs px-2.5 py-1 rounded bg-white/15 text-white font-bold border border-white/25">Kotlin</span>
+              <span class="font-mono text-xs px-2.5 py-1 rounded bg-cyan-400/25 text-cyan-200 font-bold border border-cyan-400/50">Jetpack Compose</span>
+              <span class="font-mono text-xs px-2.5 py-1 rounded bg-white/15 text-white font-bold border border-white/25">Firebase</span>
+              <span class="font-mono text-xs px-2.5 py-1 rounded bg-white/15 text-white font-bold border border-white/25">Cloudinary</span>
+            </div>
+          </div>
+
+          <!-- Phone Mock Preview -->
+          <div class="md:col-span-5 flex justify-center">
+            <div class="w-56 h-[380px] rounded-[32px] bg-slate-900 border-2 border-cyan-400/60 p-2 shadow-2xl relative overflow-hidden">
+              <div class="w-full h-full rounded-[24px] bg-slate-950 overflow-hidden relative border border-white/10">
+                <img 
+                  alt="MyWallpaper App Preview" 
+                  class="w-full h-full object-cover object-top block" 
+                  src="./assets/mywallpaper_preview.jpg"
+                  onerror="this.onerror=null; this.src='https://lh3.googleusercontent.com/aida-public/AB6AXuDnsoAQWcVqFBg6pbxRczMAKzIbKaRw8tSeI7nJYDAFhHskvRq5JE2m0xQv0hr0rtqv14SuQDcqul8Q9V0VS6sYkekRql-Q3YiChYdhKbeeqcTb2puvT2qkjpJguQ-lg3K_dtCXfVXvo6SJenHMPwjPSfp0HcFACMW1FbWHVUwhdJtgaUdVaB4m93WkJTpjHztoFbGpUNfKh0gJKmR1EGCKVbjoRxbQUovsCkOUXlfqVbV7S0DsVsYynLYzWYO_zMpxyA';"
+                  loading="lazy"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- NODE 5: MYWALLPAPER ADMIN PANEL (Z = 14000) -->
+    <section id="node-5" class="spatial-node spatial-interactive" aria-label="MyWallpaper Admin Panel">
+      <div class="w-[88vw] max-w-4xl space-glass p-6 md:p-8 rounded-3xl relative border-cyan-400/50">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-400/20 border border-cyan-400/60 text-cyan-200 font-mono text-xs mb-3 font-bold">
+          <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping shadow-[0_0_6px_#38bdf8]"></span>
+          MANAGEMENT BACKBONE // ECOSYSTEM DEPTH
+        </div>
+
+        <h2 class="font-display text-2xl md:text-4xl font-black text-white text-bloom-white">MYWALLPAPER ADMIN PANEL</h2>
+        <p class="font-mono text-xs md:text-sm text-cyan-300 tracking-wider mt-1 uppercase mb-6 font-bold text-bloom-cyan">WEB ADMIN PORTAL FOR ASSET INGESTION &amp; USER GOVERNANCE</p>
+
+        <div class="space-glass-card rounded-2xl p-5 border border-cyan-400/30 space-y-4">
+          <div class="flex items-center justify-between border-b border-white/20 pb-3">
+            <div class="flex items-center gap-2.5">
+              <span class="w-3 h-3 rounded-full bg-red-400 shadow-sm"></span>
+              <span class="w-3 h-3 rounded-full bg-yellow-400 shadow-sm"></span>
+              <span class="w-3 h-3 rounded-full bg-green-400 shadow-sm"></span>
+              <span class="font-mono text-xs text-slate-100 ml-2 font-bold">mywallpaper-admin.internal</span>
+            </div>
+            <span class="font-mono text-xs text-teal-300 font-bold">STATUS: CONNECTED</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <div class="p-3.5 rounded-xl bg-slate-900/90 border border-cyan-400/30">
+              <span class="font-mono text-[10px] text-cyan-200 uppercase font-bold">ASSET MANAGEMENT</span>
+              <div class="font-mono text-xl font-black text-white mt-1 text-bloom-white">12,480+</div>
+              <p class="text-xs text-slate-100 mt-1 font-medium">Wallpapers synchronized via Cloudinary</p>
+            </div>
+            <div class="p-3.5 rounded-xl bg-slate-900/90 border border-cyan-400/30">
+              <span class="font-mono text-[10px] text-cyan-200 uppercase font-bold">CATEGORIES</span>
+              <div class="font-mono text-xl font-black text-cyan-300 mt-1 text-bloom-cyan">42 ACTIVE</div>
+              <p class="text-xs text-slate-100 mt-1 font-medium">Dynamic tags, featured sets, collections</p>
+            </div>
+            <div class="p-3.5 rounded-xl bg-slate-900/90 border border-teal-400/30">
+              <span class="font-mono text-[10px] text-teal-200 uppercase font-bold">SECURITY</span>
+              <div class="font-mono text-xl font-black text-teal-300 mt-1 text-bloom-teal">FIREBASE AUTH</div>
+              <p class="text-xs text-slate-100 mt-1 font-medium">Role-based access control &amp; admin tokens</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- NODE 6: FEATURED PROJECT 02 — URBAN BITES (Z = 16800) -->
+    <section id="node-6" class="spatial-node spatial-interactive" aria-label="Urban Bites Project">
+      <div class="w-[88vw] max-w-4xl space-glass p-6 md:p-8 rounded-3xl relative">
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+          <div class="md:col-span-7 space-y-4">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-400/20 border border-teal-400/50 text-teal-200 font-mono text-xs font-bold">
+              <span>FLAGSHIP 02</span>
+              <span>•</span>
+              <span>COMMERCE ARCHITECTURE</span>
+            </div>
+
+            <h2 class="font-display text-3xl md:text-5xl font-black text-white tracking-tight leading-none text-bloom-white">
+              URBAN BITES
+            </h2>
+
+            <div class="font-mono text-xs md:text-sm text-teal-300 tracking-wider uppercase font-bold text-bloom-teal">
+              ANDROID FOOD ORDERING APP + WEB ADMIN CONSOLE
+            </div>
+
+            <p class="text-slate-100 text-xs md:text-sm leading-relaxed font-medium">
+              Full-featured consumer food ordering system with instant cart updates, category filtering, user profiles, and real-time Firestore database synchronization.
+            </p>
+
+            <div class="grid grid-cols-2 gap-2.5 pt-1">
+              <div class="space-glass-card p-3 rounded-xl border border-teal-400/30">
+                <span class="font-mono text-[10px] text-teal-300 font-bold block mb-0.5">APP FEATURES</span>
+                <p class="text-xs text-white font-semibold">Auth, Live Menu, Dynamic Cart, Checkout</p>
+              </div>
+              <div class="space-glass-card p-3 rounded-xl border border-cyan-400/30">
+                <span class="font-mono text-[10px] text-cyan-300 font-bold block mb-0.5">REALTIME DATA</span>
+                <p class="text-xs text-white font-semibold">Firestore Real-time order tracking &amp; state</p>
+              </div>
+            </div>
+
+            <div class="flex flex-wrap gap-1.5 pt-1">
+              <span class="font-mono text-xs px-2.5 py-1 rounded bg-white/15 text-white font-bold border border-white/25">Kotlin</span>
+              <span class="font-mono text-xs px-2.5 py-1 rounded bg-teal-400/25 text-teal-200 font-bold border border-teal-400/50">Jetpack Compose</span>
+              <span class="font-mono text-xs px-2.5 py-1 rounded bg-white/15 text-white font-bold border border-white/25">Firebase Auth</span>
+              <span class="font-mono text-xs px-2.5 py-1 rounded bg-white/15 text-white font-bold border border-white/25">Firestore</span>
+            </div>
+          </div>
+
+          <!-- Phone Mock Preview -->
+          <div class="md:col-span-5 flex justify-center">
+            <div class="w-56 h-[380px] rounded-[32px] bg-slate-900 border-2 border-teal-400/60 p-2 shadow-2xl relative overflow-hidden">
+              <div class="w-full h-full rounded-[24px] bg-gradient-to-br from-slate-950 via-slate-900 to-black flex flex-col justify-between overflow-hidden relative border border-white/10">
+                <div class="relative w-full h-full overflow-hidden rounded-[22px]">
+                  <img 
+                    alt="Urban Bites App UI" 
+                    class="w-full h-full object-cover object-top rounded-[22px] block" 
+                    src="./assets/urbanbites_preview.jpg"
+                    onerror="this.onerror=null; this.src='https://lh3.googleusercontent.com/aida-public/AB6AXuA4_erMlVENjh4NpHcHaO5DtrYveIYkRVaTbs0AJBlzOVWKXF-nj3f0bsnFZwH_uFBKvS2eM0J4c9_XnnA1LwSBT7qY1HFHHlQK8ONyU6ccooAmgdbsb-0LZSG8NBSAq0X_yAF233o-A3pC9pG3hHTGWiJiedQd56EkhkMfJYCwBXwZMtRSP4TFWaOCe_CgVHMl33VaWaoOGCj7FUzwwQBVlMH4uzbJAyBejye5TGYMdilFf6MWUPGSWmQiO2Nx8XVH7Q';"
+                    loading="lazy"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- NODE 7: URBAN BITES ADMIN CONSOLE (Z = 19600) -->
+    <section id="node-7" class="spatial-node spatial-interactive" aria-label="Urban Bites Admin Console">
+      <div class="w-[88vw] max-w-4xl space-glass p-6 md:p-8 rounded-3xl relative border-teal-400/50">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-400/20 border border-teal-400/60 text-teal-200 font-mono text-xs mb-3 font-bold">
+          <span class="w-2 h-2 rounded-full bg-teal-400 animate-ping shadow-[0_0_6px_#2dd4bf]"></span>
+          OPERATIONS DISPATCH // INTERNAL ECOSYSTEM
+        </div>
+
+        <h2 class="font-display text-2xl md:text-4xl font-black text-white text-bloom-white">URBAN BITES ADMIN CONSOLE</h2>
+        <p class="font-mono text-xs md:text-sm text-teal-300 tracking-wider mt-1 uppercase mb-6 font-bold text-bloom-teal">WEB-BASED OPERATIONS &amp; REALTIME DISPATCH CONSOLE</p>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="space-glass-card p-5 rounded-2xl border border-white/20">
+            <h3 class="font-mono text-xs text-teal-300 uppercase tracking-wider mb-1 font-bold">LIVE ORDERS</h3>
+            <div class="font-mono text-xl font-bold text-white text-bloom-white">DISPATCH QUEUE</div>
+            <p class="text-xs text-slate-100 mt-2 font-medium">Instant order status toggling (Cooking, Out, Completed)</p>
+          </div>
+
+          <div class="space-glass-card p-5 rounded-2xl border border-white/20">
+            <h3 class="font-mono text-xs text-teal-300 uppercase tracking-wider mb-1 font-bold">MENU CATALOG</h3>
+            <div class="font-mono text-xl font-bold text-white text-bloom-white">PRODUCT CONTROL</div>
+            <p class="text-xs text-slate-100 mt-2 font-medium">Create, modify, toggle price and stock availability in Firestore</p>
+          </div>
+
+          <div class="space-glass-card p-5 rounded-2xl border border-white/20">
+            <h3 class="font-mono text-xs text-teal-300 uppercase tracking-wider mb-1 font-bold">FRONTEND TECH</h3>
+            <div class="font-mono text-xs text-white mt-2 space-y-1 font-semibold">
+              <div>• HTML5 / Modern CSS3</div>
+              <div>• Vanilla JavaScript Engine</div>
+              <div>• Firebase SDK &amp; Firestore Listeners</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- NODE 8: FEATURED PROJECT 03 — FALAH PRO (Z = 22400) -->
+    <section id="node-8" class="spatial-node spatial-interactive" aria-label="Falah Pro Project">
+      <div class="w-[88vw] max-w-4xl space-glass p-6 md:p-8 rounded-3xl relative border-cyan-400/50">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-6 pb-4 border-b border-cyan-400/25">
+          <div>
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-400/20 border border-cyan-400/50 text-cyan-200 font-mono text-xs mb-2 font-bold">
+              <span>FLAGSHIP 03</span>
+              <span>•</span>
+              <span>CALM &amp; SACRED UTILITY</span>
+            </div>
+            <h2 class="font-display text-3xl md:text-5xl font-black text-white tracking-tight text-bloom-white">FALAH PRO</h2>
+            <p class="font-mono text-xs md:text-sm text-cyan-300 tracking-wider uppercase mt-1 font-bold text-bloom-cyan">PRODUCTION-READY ISLAMIC ANDROID APPLICATION</p>
+          </div>
+          <div class="font-mono text-xs text-cyan-200 border border-cyan-400/50 px-3.5 py-1.5 rounded-xl bg-slate-900/80 font-bold">
+            STANDALONE CLIENT APP
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+          <div class="space-y-3.5 text-slate-100 text-xs md:text-sm leading-relaxed font-medium">
+            <p>
+              An elegant, battery-efficient, offline-first Islamic companion crafted in Jetpack Compose with strict Clean Architecture and WorkManager for scheduled daily prayer reminders.
+            </p>
+            <div class="grid grid-cols-2 gap-2.5 pt-1">
+              <div class="space-glass-card p-3 rounded-xl border border-cyan-400/30">
+                <span class="font-mono text-xs text-cyan-300 font-bold block">Prayer Times</span>
+                <span class="text-xs text-white font-semibold">Astronomical calculations</span>
+              </div>
+              <div class="space-glass-card p-3 rounded-xl border border-cyan-400/30">
+                <span class="font-mono text-xs text-cyan-300 font-bold block">Qibla Compass</span>
+                <span class="text-xs text-white font-semibold">Hardware sensor fusion</span>
+              </div>
+              <div class="space-glass-card p-3 rounded-xl border border-cyan-400/30">
+                <span class="font-mono text-xs text-cyan-300 font-bold block">Tasbih Counter</span>
+                <span class="text-xs text-white font-semibold">Haptic feedback counter</span>
+              </div>
+              <div class="space-glass-card p-3 rounded-xl border border-cyan-400/30">
+                <span class="font-mono text-xs text-cyan-300 font-bold block">Dua &amp; Dhikr</span>
+                <span class="text-xs text-white font-semibold">Curated authentic library</span>
+              </div>
+            </div>
+            <div class="flex flex-wrap gap-1.5 pt-1">
+              <span class="font-mono text-xs px-2.5 py-1 rounded bg-white/15 text-white font-bold border border-white/25">Kotlin</span>
+              <span class="font-mono text-xs px-2.5 py-1 rounded bg-cyan-400/25 text-cyan-200 font-bold border border-cyan-400/50">Jetpack Compose</span>
+              <span class="font-mono text-xs px-2.5 py-1 rounded bg-white/15 text-white font-bold border border-white/25">Clean Arch</span>
+              <span class="font-mono text-xs px-2.5 py-1 rounded bg-white/15 text-white font-bold border border-white/25">WorkManager</span>
+              <span class="font-mono text-xs px-2.5 py-1 rounded bg-white/15 text-white font-bold border border-white/25">DataStore</span>
+            </div>
+          </div>
+
+          <div class="space-glass-card p-6 rounded-2xl border border-cyan-400/50 flex flex-col items-center justify-center text-center py-8">
+            <div class="w-20 h-20 rounded-full border-2 border-cyan-400/70 flex items-center justify-center mb-3 relative shadow-[0_0_15px_rgba(56,189,248,0.4)]">
+              <div class="w-3 h-3 rounded-full bg-cyan-300 animate-ping shadow-[0_0_8px_#38bdf8]"></div>
+              <span class="absolute top-2 font-mono text-[10px] text-cyan-200 font-bold">N</span>
+            </div>
+            <span class="font-mono text-xs text-cyan-300 uppercase tracking-widest font-bold text-bloom-cyan">QIBLA SENSOR CALIBRATED</span>
+            <span class="font-mono text-xs text-slate-100 mt-1 font-semibold">Background notifications handled via WorkManager</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- NODE 9: SPECIALIZED PROJECTS — FACESENSE & DRC DELHI (Z = 25200) -->
+    <section id="node-9" class="spatial-node spatial-interactive" aria-label="FaceSense and DRC Delhi Projects">
+      <div class="w-[88vw] max-w-4xl space-glass p-6 md:p-8 rounded-3xl relative">
+        <div class="mb-5 pb-3 border-b border-cyan-400/25">
+          <span class="font-mono text-xs text-indigo-300 uppercase tracking-widest font-bold">SPECIALIZED PRODUCTS</span>
+          <h2 class="font-display text-2xl md:text-4xl font-black text-white mt-1 text-bloom-white">AI &amp; CONNECTED PLATFORMS</h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <!-- FaceSense -->
+          <div class="space-glass-card p-5 md:p-6 rounded-2xl border-t-2 border-indigo-400 border border-white/20 space-y-3">
+            <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-md bg-indigo-400/25 border border-indigo-400/50 text-indigo-200 font-mono text-xs font-bold">
+              ON-DEVICE ML
+            </div>
+            <h3 class="font-display text-xl md:text-2xl font-black text-white text-bloom-white">FACESENSE</h3>
+            <p class="font-mono text-xs text-indigo-300 uppercase font-bold">AI-POWERED EXPRESSION ANALYSIS</p>
+            <p class="text-xs md:text-sm text-slate-100 leading-relaxed font-medium">
+              Private, zero-cloud on-device computer vision analyzing facial micro-expressions, smile probability, and landmarks using Google ML Kit.
+            </p>
+            <div class="space-y-1 pt-1 font-mono text-xs text-white font-semibold">
+              <div>✓ Multiple-face detection</div>
+              <div>✓ Smile intensity &amp; Eye openness</div>
+              <div>✓ Facial landmarks telemetry</div>
+              <div>✓ 100% Privacy-focused offline pipeline</div>
+            </div>
+          </div>
+
+          <!-- DRC Delhi -->
+          <div class="space-glass-card p-5 md:p-6 rounded-2xl border-t-2 border-cyan-400 border border-white/20 space-y-3">
+            <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-md bg-cyan-400/25 border border-cyan-400/50 text-cyan-200 font-mono text-xs font-bold">
+              EDTECH HYBRID
+            </div>
+            <h3 class="font-display text-xl md:text-2xl font-black text-white text-bloom-white">DRC DELHI</h3>
+            <p class="font-mono text-xs text-cyan-300 uppercase font-bold">KOTLIN WEBVIEW LEARNING ECOSYSTEM</p>
+            <p class="text-xs md:text-sm text-slate-100 leading-relaxed font-medium">
+              Seamless hybrid mobile educational client bridging web-based exam portals with native Android notifications, deep-linking, and session telemetry.
+            </p>
+            <div class="space-y-1 pt-1 font-mono text-xs text-white font-semibold">
+              <div>✓ Interactive Courses &amp; Workshops</div>
+              <div>✓ Real-time Test Series telemetry</div>
+              <div>✓ Curated Resource repository</div>
+              <div>✓ Push notifications &amp; Event schedules</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- NODE 10: EXPERIENCE WORLD (Z = 28000) -->
+    <section id="node-10" class="spatial-node spatial-interactive" aria-label="Professional Experience">
+      <div class="w-[88vw] max-w-4xl space-glass p-6 md:p-8 rounded-3xl relative">
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-5 pb-4 border-b border-cyan-400/25">
+          <div>
+            <span class="font-mono text-xs text-cyan-300 uppercase tracking-widest font-bold">PRODUCTION TRACK RECORD</span>
+            <h2 class="font-display text-2xl md:text-4xl font-black text-white mt-1 text-bloom-white">PROFESSIONAL EXPERIENCE</h2>
+          </div>
+          <span class="font-mono text-xs text-teal-300 font-bold text-bloom-teal">ACTIVE APPOINTMENT</span>
+        </div>
+
+        <div class="space-glass-card p-6 rounded-2xl border border-cyan-400/40 relative overflow-hidden">
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-4 pb-4 border-b border-white/20">
+            <div>
+              <span class="font-mono text-xs text-cyan-300 tracking-widest uppercase font-bold">ENGINEERING ROLE</span>
+              <h3 class="font-display text-xl md:text-2xl font-black text-white mt-0.5 text-bloom-white">SDE ANDROID INTERN</h3>
+              <div class="font-mono text-xs md:text-sm text-slate-100 mt-1 font-bold">AD TECHNOLOGIES • NEW DELHI, INDIA</div>
+            </div>
+            <div class="space-glass-card px-4 py-2 rounded-xl border border-cyan-400/30 text-right">
+              <span class="font-mono text-xs text-teal-300 font-bold block">MARCH 2026 – AUGUST 2026</span>
+              <span class="font-mono text-[10px] text-slate-200 block mt-0.5 font-semibold">FULL-TIME APPOINTMENT</span>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs md:text-sm text-slate-100 leading-relaxed mb-4 font-medium">
+            <div>
+              <p>
+                Architected high-reliability Android feature sets leveraging Jetpack Compose, Material 3, and Clean Architecture. Integrated real-time Supabase cloud sync, asynchronous Coroutines &amp; StateFlow pipelines.
+              </p>
+            </div>
+            <div>
+              <p>
+                Spearheaded AI image enhancement module pipelines, automated background WorkManager tasks, and governed production Google Play deployment cycles with robust automated testing.
+              </p>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap gap-1.5 pt-2 border-t border-white/15">
+            <span class="font-mono text-xs px-2.5 py-1 rounded bg-white/15 text-white font-bold border border-white/25">Kotlin</span>
+            <span class="font-mono text-xs px-2.5 py-1 rounded bg-white/15 text-white font-bold border border-white/25">Jetpack Compose</span>
+            <span class="font-mono text-xs px-2.5 py-1 rounded bg-white/15 text-white font-bold border border-white/25">Material 3</span>
+            <span class="font-mono text-xs px-2.5 py-1 rounded bg-cyan-400/25 text-cyan-200 font-bold border border-cyan-400/50">Supabase</span>
+            <span class="font-mono text-xs px-2.5 py-1 rounded bg-white/15 text-white font-bold border border-white/25">PostgreSQL</span>
+            <span class="font-mono text-xs px-2.5 py-1 rounded bg-white/15 text-white font-bold border border-white/25">REST APIs</span>
+            <span class="font-mono text-xs px-2.5 py-1 rounded bg-teal-400/25 text-teal-200 font-bold border border-teal-400/50">AI Enhancement</span>
+            <span class="font-mono text-xs px-2.5 py-1 rounded bg-white/15 text-white font-bold border border-white/25">Google Play</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- NODE 11: CONTACT CORE & CIRCULAR PORTAL (Z = 30800) -->
+    <section id="node-11" class="spatial-node spatial-interactive" aria-label="Contact Core">
+      <div class="flex flex-col items-center text-center max-w-xl px-4 py-4">
+        <!-- Central Luminous Sphere & Orbiting Gyroscope -->
+        <div class="relative mb-6 flex items-center justify-center">
+          <div class="core-sphere pulse-glow"></div>
+          <div class="core-ring w-[240px] h-[240px]"></div>
+          <div class="core-ring w-[290px] h-[290px]" style="animation-duration: 22s; animation-direction: reverse;"></div>
+          <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <span class="font-mono text-xs tracking-[0.3em] uppercase text-white font-black drop-shadow-[0_0_8px_#fff]">THE CORE</span>
+          </div>
+        </div>
+
+        <h2 class="font-display text-3xl sm:text-4xl md:text-5xl font-black text-white tracking-tight mb-3 text-bloom-white">
+          LET'S BUILD SOMETHING GREAT.
+        </h2>
+
+        <p class="text-slate-100 text-xs md:text-sm font-medium mb-6 max-w-md">
+          Open for Android engineering roles, architectural consultations, and ambitious software collaborations.
+        </p>
+
+        <!-- Direct Email Interaction with bright glow -->
+        <a class="space-glass space-glass-active px-6 py-3.5 rounded-2xl flex items-center gap-3 group transition-all duration-300 hover:scale-105 mb-6 shadow-[0_0_25px_rgba(56,189,248,0.35)] focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400" href="mailto:rehaanalam0078@gmail.com" aria-label="Email Md Rehaan Alam">
+          <svg class="w-5 h-5 text-cyan-300 group-hover:animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+          </svg>
+          <span class="font-mono text-sm md:text-base text-white font-bold tracking-wide">rehaanalam0078@gmail.com</span>
+        </a>
+
+        <!-- Social Connects -->
+        <div class="flex items-center gap-4">
+          <a class="px-5 py-2 rounded-xl bg-slate-900/90 border border-cyan-400/40 hover:border-cyan-300 text-white font-mono text-xs font-bold transition-all shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400" href="https://github.com/rehaanalam0078-alm" rel="noopener noreferrer" target="_blank" aria-label="Visit GitHub Profile">
+            GitHub
+          </a>
+          <a class="px-5 py-2 rounded-xl bg-slate-900/90 border border-cyan-400/40 hover:border-cyan-300 text-white font-mono text-xs font-bold transition-all shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400" href="https://www.linkedin.com/in/md-rehaan-alam-561052410/" rel="noopener noreferrer" target="_blank" aria-label="Visit LinkedIn Profile">
+            LinkedIn
+          </a>
+        </div>
+
+        <button id="cta-cycle-universe" class="mt-8 font-mono text-[10px] text-cyan-300 tracking-[0.25em] uppercase font-bold animate-pulse text-bloom-cyan hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 px-3 py-1 rounded" aria-label="Continue Forward and Cycle Universe">
+          CONTINUE FORWARD // UNIVERSE CYCLES SEAMLESSLY
+        </button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Application Bootstrap Module -->
+  <script type="module" src="./js/main.js"></script>
+</body>
+</html>

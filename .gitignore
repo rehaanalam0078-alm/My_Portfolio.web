@@ -1,0 +1,13 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Temporary archives & exports
+extracted_stitch/
+*.zip
+
+# System & IDE files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

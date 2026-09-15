@@ -1,0 +1,261 @@
+/* ============================================================
+   REHAAN_ENGINE SPATIAL PORTFOLIO — CORE STYLESHEET
+   Production Grade Styling with Responsive Spatial Viewport
+   ============================================================ */
+
+/* Reset & Viewport locking with Razor-Sharp Crisp Rendering */
+*, *::before, *::after {
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+:root {
+  --space-950: #03081a;
+  --space-900: #061332;
+  --space-800: #0b1f4d;
+  --space-700: #112c6a;
+  --cyan-glow: #00f2fe;
+  --teal-glow: #2dd4bf;
+  --indigo-glow: #818cf8;
+  --sky-glow: #38bdf8;
+  --stage-y-offset: 0px;
+}
+
+@media (min-width: 768px) {
+  :root {
+    --stage-y-offset: -20px;
+  }
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  background-color: #030a21;
+  color: #ffffff;
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+  overscroll-behavior: none;
+}
+
+/* Spatial 3D stage */
+#world-stage {
+  position: absolute;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  perspective: 900px;
+  perspective-origin: 50% 50%;
+  overflow: hidden;
+  transform-style: preserve-3d;
+  pointer-events: none;
+}
+
+@media (max-width: 640px) {
+  #world-stage {
+    perspective: 750px;
+  }
+}
+
+.spatial-node {
+  position: absolute;
+  top: calc(50% + var(--stage-y-offset));
+  left: 50%;
+  transform-style: preserve-3d;
+  will-change: transform, opacity;
+  pointer-events: none;
+  transform-origin: center center;
+  opacity: 0;
+  width: 100%;
+  max-width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.spatial-interactive {
+  pointer-events: auto;
+}
+
+/* Crisp Glassmorphism & Borders */
+.space-glass {
+  background: rgba(6, 17, 44, 0.92);
+  border: 1px solid rgba(56, 189, 248, 0.45);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7), 0 0 15px rgba(56, 189, 248, 0.15), inset 0 1px 1px rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.space-glass-card {
+  background: rgba(10, 24, 58, 0.88);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.space-glass-active {
+  border: 1px solid rgba(34, 211, 238, 0.85);
+  box-shadow: 0 0 20px rgba(34, 211, 238, 0.3), inset 0 0 12px rgba(34, 211, 238, 0.15);
+}
+
+/* High-Contrast Bloom Typography */
+.text-bloom-white {
+  color: #ffffff;
+  text-shadow: 0 0 12px rgba(255, 255, 255, 0.4);
+}
+
+.text-bloom-cyan {
+  color: #38bdf8;
+  text-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+}
+
+.text-bloom-teal {
+  color: #2dd4bf;
+  text-shadow: 0 0 10px rgba(45, 212, 191, 0.5);
+}
+
+/* Fullscreen Canvases */
+#starfield-canvas, #atmosphere-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* Safe Area HUD Placements */
+.hud-top-right {
+  top: max(1.25rem, env(safe-area-inset-top, 1.25rem));
+  right: max(1.25rem, env(safe-area-inset-right, 1.25rem));
+}
+
+.hud-top-left {
+  top: max(1.25rem, env(safe-area-inset-top, 1.25rem));
+  left: max(1.25rem, env(safe-area-inset-left, 1.25rem));
+}
+
+.hud-bottom-right {
+  bottom: max(1rem, env(safe-area-inset-bottom, 1rem));
+  right: max(1rem, env(safe-area-inset-right, 1rem));
+}
+
+.hud-depth {
+  right: max(1.25rem, env(safe-area-inset-right, 1.25rem));
+}
+
+/* Mobile Quick Teleport bar optimization */
+@media (max-width: 640px) {
+  .hud-bottom-right {
+    right: 50%;
+    transform: translateX(50%);
+    bottom: max(0.75rem, env(safe-area-inset-bottom, 0.75rem));
+    padding: 0.35rem 0.65rem;
+    gap: 0.35rem;
+  }
+  .hud-bottom-right button {
+    width: 0.5rem;
+    height: 0.5rem;
+  }
+}
+
+/* Phone chassis */
+.phone-body {
+  width: clamp(220px, 45vw, 270px);
+  height: clamp(430px, 70vh, 520px);
+  border-radius: 40px;
+  background: #081126;
+  border: 3px solid rgba(56, 189, 248, 0.6);
+  box-shadow: 0 0 0 2px #0f234f, 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 30px rgba(56, 189, 248, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.phone-screen {
+  position: absolute;
+  inset: 5px;
+  border-radius: 34px;
+  background: #030919;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.phone-island {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 20px;
+  background: #000;
+  border-radius: 18px;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 8px;
+  border: 1px solid rgba(56, 189, 248, 0.4);
+}
+
+/* Core Reactor Sphere & Orbiting Gyro Rings */
+.core-sphere {
+  width: clamp(140px, 25vw, 180px);
+  height: clamp(140px, 25vw, 180px);
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #ffffff 0%, #38bdf8 35%, #0284c7 70%, #031338 100%);
+  box-shadow: 0 0 50px rgba(56, 189, 248, 0.7);
+  position: relative;
+}
+
+.core-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border-radius: 50%;
+  border: 1.5px solid rgba(56, 189, 248, 0.7);
+  transform: translate(-50%, -50%);
+  animation: spinRing 16s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes spinRing {
+  0% { transform: translate(-50%, -50%) rotate(0deg) rotateX(65deg); }
+  100% { transform: translate(-50%, -50%) rotate(360deg) rotateX(65deg); }
+}
+
+.pulse-glow {
+  animation: pulseGlow 3.5s ease-in-out infinite alternate;
+}
+
+@keyframes pulseGlow {
+  0% { opacity: 0.75; filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.5)); }
+  100% { opacity: 1; filter: drop-shadow(0 0 25px rgba(56, 189, 248, 0.95)); }
+}
+
+/* Focus and Accessibility Rings */
+button:focus-visible, a:focus-visible {
+  outline: 2px solid #00f2fe !important;
+  outline-offset: 3px !important;
+}
+
+/* Utility to hide native scrollbar */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Interactive subtle tap highlight removal for iOS */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
