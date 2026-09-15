@@ -1,5 +1,6 @@
 /**
  * REHAAN_ENGINE High-DPI Spatial Starfield & Atmospheric Nebular Dust System
+ * Multi-depth parallax stars, streamer trails, and dynamic transit fog corridors.
  */
 
 export class SpatialCanvases {
@@ -19,7 +20,7 @@ export class SpatialCanvases {
     // Quality tiering based on device screen size and hardware capabilities
     this.isMobile = window.innerWidth < 768;
     this.numStars = this.isMobile ? 500 : 1100;
-    this.numDust = this.isMobile ? 35 : 70;
+    this.numDust = this.isMobile ? 40 : 80;
 
     this.initStars();
     this.initDust();
@@ -36,11 +37,10 @@ export class SpatialCanvases {
     this.height = window.innerHeight;
     this.isMobile = this.width < 768;
 
-    // Adjust particle count if resized across breakpoints
     const targetStars = this.isMobile ? 500 : 1100;
     if (this.stars.length !== targetStars) {
       this.numStars = targetStars;
-      this.numDust = this.isMobile ? 35 : 70;
+      this.numDust = this.isMobile ? 40 : 80;
       this.initStars();
       this.initDust();
     }
@@ -85,17 +85,17 @@ export class SpatialCanvases {
     this.dustParticles = [];
     for (let i = 0; i < this.numDust; i++) {
       this.dustParticles.push({
-        x: (Math.random() - 0.5) * this.width * 2.0,
-        y: (Math.random() - 0.5) * this.height * 2.0,
+        x: (Math.random() - 0.5) * this.width * 2.2,
+        y: (Math.random() - 0.5) * this.height * 2.2,
         z: Math.random() * 3200,
-        radius: Math.random() * 180 + 60,
-        alpha: Math.random() * 0.045 + 0.015,
+        radius: Math.random() * 220 + 70,
+        alpha: Math.random() * 0.05 + 0.02,
         hue: Math.random() > 0.45 ? 195 : (Math.random() > 0.5 ? 175 : 230)
       });
     }
   }
 
-  render(velZ) {
+  render(velZ, transitFactor = 0) {
     if (!this.starCtx || !this.atmosCtx) return;
 
     const dpr = this.dpr;
@@ -105,12 +105,14 @@ export class SpatialCanvases {
     const cy = h / 2;
     const speedFactor = Math.abs(velZ);
 
-    // 1. Render Starfield
+    // 1. Render Multi-depth Starfield
     this.starCtx.clearRect(0, 0, w, h);
 
     for (let i = 0; i < this.stars.length; i++) {
       const star = this.stars[i];
-      star.z -= (star.origZ < 700 ? 2.4 : star.origZ < 1400 ? 1.4 : 0.6) * (velZ * 0.45 + 1.5);
+      // Multi-tier speed: near stars move fast, mid stars medium, far stars slow
+      const depthMultiplier = star.origZ < 700 ? 2.6 : (star.origZ < 1500 ? 1.4 : 0.65);
+      star.z -= depthMultiplier * (velZ * 0.45 + 1.5);
 
       if (star.z < 25) {
         star.z += 2400;
@@ -132,13 +134,14 @@ export class SpatialCanvases {
         this.starCtx.fillStyle = star.color;
         this.starCtx.globalAlpha = alpha;
 
-        if ((speedFactor > 1.5 || star.isStreamer) && star.z < 1600) {
-          const trailLength = Math.min(40, (velZ * 0.8 + 2.5) * (1800 / star.z));
+        // Streamer trails when camera moves
+        if ((speedFactor > 1.2 || star.isStreamer) && star.z < 1600) {
+          const trailLength = Math.min(45, (velZ * 0.85 + 2.8) * (1800 / star.z));
           const prevK = (460 * dpr) / (star.z + trailLength * 8);
           const prevPx = star.x * prevK + cx;
           const prevPy = star.y * prevK + cy;
 
-          this.starCtx.lineWidth = Math.max(0.6 * dpr, size * 0.8);
+          this.starCtx.lineWidth = Math.max(0.6 * dpr, size * 0.85);
           this.starCtx.strokeStyle = star.color;
           this.starCtx.beginPath();
           this.starCtx.moveTo(px, py);
@@ -153,8 +156,11 @@ export class SpatialCanvases {
     }
     this.starCtx.globalAlpha = 1.0;
 
-    // 2. Render Atmospheric Nebular Dust
+    // 2. Render Atmospheric Nebular Fog with Transit Modulation
     this.atmosCtx.clearRect(0, 0, w, h);
+
+    // Fog boost in the corridor between destinations
+    const fogDensityMultiplier = 1.0 + transitFactor * 0.8;
 
     for (let i = 0; i < this.dustParticles.length; i++) {
       const p = this.dustParticles[i];
@@ -164,14 +170,17 @@ export class SpatialCanvases {
       const py = p.y * k + cy;
 
       if (px >= -250 && px <= w + 250 && py >= -250 && py <= h + 250) {
-        const grad = this.atmosCtx.createRadialGradient(px, py, 0, px, py, p.radius * k);
-        grad.addColorStop(0, `hsla(${p.hue}, 90%, 65%, ${p.alpha * (1 - p.z / 3200) * 1.2})`);
-        grad.addColorStop(0.6, `hsla(${p.hue + 15}, 80%, 50%, ${p.alpha * 0.4 * (1 - p.z / 3200)})`);
+        const radius = p.radius * k * (1.0 + transitFactor * 0.3);
+        const grad = this.atmosCtx.createRadialGradient(px, py, 0, px, py, radius);
+        const alpha = p.alpha * (1 - p.z / 3200) * fogDensityMultiplier;
+
+        grad.addColorStop(0, `hsla(${p.hue}, 90%, 65%, ${Math.min(0.22, alpha * 1.3)})`);
+        grad.addColorStop(0.6, `hsla(${p.hue + 15}, 80%, 50%, ${Math.min(0.12, alpha * 0.5)})`);
         grad.addColorStop(1, 'transparent');
 
         this.atmosCtx.fillStyle = grad;
         this.atmosCtx.beginPath();
-        this.atmosCtx.arc(px, py, p.radius * k, 0, Math.PI * 2);
+        this.atmosCtx.arc(px, py, radius, 0, Math.PI * 2);
         this.atmosCtx.fill();
       }
     }

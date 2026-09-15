@@ -5,18 +5,21 @@
 
 import { SpatialAudioEngine } from './audio.js';
 import { SpatialCanvases } from './starfield.js';
+import { StarshipBattleSystem } from './battle.js';
 import { SpatialEngine } from './spatial-engine.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   // Initialize Subsystems
   const audio = new SpatialAudioEngine();
   const canvases = new SpatialCanvases('starfield-canvas', 'atmosphere-canvas');
-  const spatialEngine = new SpatialEngine(audio, canvases);
+  const battleSystem = new StarshipBattleSystem('battle-canvas', audio);
+  const spatialEngine = new SpatialEngine(audio, canvases, battleSystem);
 
   // Expose global controller for debugging / external calls
   window.REHAAN_ENGINE = {
     audio,
     canvases,
+    battleSystem,
     spatialEngine,
     jumpToNode: (i) => spatialEngine.jumpToNode(i)
   };

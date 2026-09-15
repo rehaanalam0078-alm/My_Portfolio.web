@@ -21,9 +21,10 @@ export const NODES = [
 ];
 
 export class SpatialEngine {
-  constructor(audioEngine, canvases) {
+  constructor(audioEngine, canvases, battleSystem = null) {
     this.audio = audioEngine;
     this.canvases = canvases;
+    this.battleSystem = battleSystem;
 
     this.targetDepth = 0;
     this.currentDepth = 0;
@@ -200,11 +201,6 @@ export class SpatialEngine {
     const instantaneousVelocity = Math.abs(diff);
     this.audio.updateWind(instantaneousVelocity);
 
-    const velZ = diff * 0.09;
-    if (this.canvases) {
-      this.canvases.render(velZ);
-    }
-
     const loopZ = ((this.currentDepth % LOOP_DISTANCE) + LOOP_DISTANCE) % LOOP_DISTANCE;
 
     // Update Depth Meter HUD
@@ -275,6 +271,18 @@ export class SpatialEngine {
       } else {
         el.style.pointerEvents = 'none';
       }
+    }
+
+    // Calculate transit fog factor (0 at destination, up to 1.0 in transit corridor)
+    const transitFactor = Math.min(1.0, Math.max(0, (closestDistance - 250) / 750));
+    const velZ = diff * 0.09;
+
+    if (this.canvases) {
+      this.canvases.render(velZ, transitFactor);
+    }
+
+    if (this.battleSystem) {
+      this.battleSystem.updateAndRender(velZ);
     }
 
     // Active node notification & teleport dot synchronization

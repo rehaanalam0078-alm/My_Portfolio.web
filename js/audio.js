@@ -1,6 +1,7 @@
 /**
  * REHAAN_ENGINE Web Audio Spatial Synthesis Engine
- * Provides dynamic spatial airflow velocity synthesis and sci-fi UI transients.
+ * Provides dynamic spatial airflow velocity synthesis, sci-fi UI transients,
+ * and cinematic distant starship laser blasters & explosion rumbles.
  */
 
 export class SpatialAudioEngine {
@@ -17,6 +18,9 @@ export class SpatialAudioEngine {
     this.windFilter = null;
     this.windGain = null;
     this.masterGain = null;
+
+    // Combat Master Bus (subtle low-pass filtering for cinematic distant depth)
+    this.combatBus = null;
     
     // Rate limit clicks
     this.lastClickTime = 0;
@@ -39,6 +43,13 @@ export class SpatialAudioEngine {
       this.masterGain = this.ctx.createGain();
       this.masterGain.gain.setValueAtTime(this.isEnabled ? 1 : 0, this.ctx.currentTime);
       this.masterGain.connect(this.ctx.destination);
+
+      // Cinematic Combat Sub-bus (low-pass filtered so space battle sounds feel distant and atmospheric)
+      this.combatBus = this.ctx.createBiquadFilter();
+      this.combatBus.type = 'lowpass';
+      this.combatBus.frequency.setValueAtTime(1400, this.ctx.currentTime);
+      this.combatBus.Q.setValueAtTime(0.7, this.ctx.currentTime);
+      this.combatBus.connect(this.masterGain);
 
       // Generate pink/brown celestial noise buffer for spatial airflow
       const sampleRate = this.ctx.sampleRate;
@@ -83,6 +94,61 @@ export class SpatialAudioEngine {
     }
   }
 
+  // Distant Star Wars style Laser Blaster SFX (Cyan Rebel chirp or Red Imperial blaster)
+  playLaser(faction = 'rebel', volume = 0.035) {
+    if (!this.isEnabled || !this.ctx || !this.isInitialized) return;
+    if (this.ctx.state === 'suspended') return;
+
+    try {
+      const now = this.ctx.currentTime;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+
+      osc.type = faction === 'rebel' ? 'sawtooth' : 'square';
+      const startF = faction === 'rebel' ? 950 + Math.random() * 200 : 780 + Math.random() * 150;
+      const endF = faction === 'rebel' ? 120 : 90;
+
+      osc.frequency.setValueAtTime(startF, now);
+      osc.frequency.exponentialRampToValueAtTime(endF, now + 0.12);
+
+      const targetVol = Math.min(0.06, Math.max(0.012, volume));
+      gain.gain.setValueAtTime(targetVol, now);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.12);
+
+      osc.connect(gain);
+      gain.connect(this.combatBus || this.masterGain);
+
+      osc.start(now);
+      osc.stop(now + 0.13);
+    } catch (e) {}
+  }
+
+  // Distant Cinematic Deep Space Explosion Rumble
+  playExplosion(volume = 0.08) {
+    if (!this.isEnabled || !this.ctx || !this.isInitialized) return;
+    if (this.ctx.state === 'suspended') return;
+
+    try {
+      const now = this.ctx.currentTime;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(140, now);
+      osc.frequency.exponentialRampToValueAtTime(32, now + 0.6);
+
+      const actualVol = Math.min(0.12, Math.max(0.02, volume));
+      gain.gain.setValueAtTime(actualVol, now);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.65);
+
+      osc.connect(gain);
+      gain.connect(this.combatBus || this.masterGain);
+
+      osc.start(now);
+      osc.stop(now + 0.68);
+    } catch (e) {}
+  }
+
   playClick() {
     if (!this.isEnabled) return;
     this.init();
@@ -93,7 +159,6 @@ export class SpatialAudioEngine {
     }
 
     const now = this.ctx.currentTime;
-    // Rate limit click synthesis to 60ms
     if (now - this.lastClickTime < 0.06) return;
     this.lastClickTime = now;
 
@@ -132,9 +197,7 @@ export class SpatialAudioEngine {
 
       clickOsc.start(now);
       clickOsc.stop(now + 0.03);
-    } catch (e) {
-      // Ignore transient errors
-    }
+    } catch (e) {}
   }
 
   updateWind(speed) {

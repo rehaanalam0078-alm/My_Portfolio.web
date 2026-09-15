@@ -14,8 +14,9 @@
 
 ### Key Highlights
 - **Continuous 3D Spatial Navigation**: 12 discrete spatial nodes seamlessly traversed via mouse wheel, touch drag, keyboard shortcuts, or quick teleport dots.
-- **High-DPI Canvas Engine**: Dynamic multi-depth starfield and atmospheric nebular dust rendered with crisp sub-pixel precision across standard, Retina, and 4K viewports.
-- **Web Audio Spatial Synth**: Movement-velocity modulated atmospheric airflow + sci-fi UI transient chirps, fully compliant with browser autoplay policies.
+- **Cinematic Starship Battle Arena**: Background space fleet dogfight simulation featuring Rebel vs. Imperial cruisers, fighters, and interceptors with laser bolts, shield deflection sparks, shockwaves, debris, and hyperspace warp streaks.
+- **High-DPI Canvas Engine**: Dynamic multi-depth starfield, transit nebular fog corridors, and space battle canvas rendered with crisp sub-pixel precision across standard, Retina, and 4K viewports.
+- **Web Audio Spatial Synth**: Movement-velocity modulated atmospheric airflow, laser blaster chirps, and deep space explosion rumbles, fully compliant with browser autoplay policies.
 - **Flagship Project Showcases**: Deep-dive showcases for **MyWallpaper**, **Urban Bites**, **Falah Pro**, **FaceSense**, and **DRC Delhi**.
 - **Cross-Device Fluid Ergonomics**: Responsive across mobile (320px–767px), tablet, and desktop with notch and safe-area inset protection (`env(safe-area-inset-*)`).
 

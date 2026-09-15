@@ -123,13 +123,29 @@ html, body {
   text-shadow: 0 0 10px rgba(45, 212, 191, 0.5);
 }
 
-/* Fullscreen Canvases */
-#starfield-canvas, #atmosphere-canvas {
+/* Fullscreen Canvases & Depth Layering */
+#battle-canvas, #starfield-canvas, #atmosphere-canvas {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   pointer-events: none;
+}
+
+#starfield-canvas {
+  z-index: 2;
+}
+
+#atmosphere-canvas {
+  z-index: 3;
+}
+
+#battle-canvas {
+  z-index: 5;
+}
+
+#world-stage {
+  z-index: 20;
 }
 
 /* Safe Area HUD Placements */
